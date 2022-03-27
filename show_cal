@@ -138,4 +138,3 @@ if __name__ == '__main__':
     argv = sys.argv[1:]
     args = getopt.getopt(argv, "y:m:d:")
     main(args[0])
-
