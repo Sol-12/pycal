@@ -1,0 +1,62 @@
+[
+  {
+    "day": 1,
+    "month": 1,
+    "name": "Novo leto"
+  },
+  {
+    "day": 2,
+    "month": 1,
+    "name": "Novo leto"
+  },
+  {
+    "day": 8,
+    "month": 2,
+    "name": "Prešernov dan"
+  },
+  {
+    "day": 27,
+    "month": 4,
+    "name": "Dan upora proti ukopatorju"
+  },
+  {
+    "day": 1,
+    "month": 5,
+    "name": "Praznik dela"
+  },
+  {
+    "day": 2,
+    "month": 5,
+    "name": "Praznik dela"
+  },
+  {
+    "day": 25,
+    "month": 6,
+    "name": "Dan državnosti"
+  },
+  {
+    "day": 15,
+    "month": 8,
+    "name": "Marijino vnebovzetje"
+  },
+  {
+    "day": 31,
+    "month": 10,
+    "name": "Dan reformacije"
+  },
+  {
+    "day": 1,
+    "month": 11,
+    "name": "Dan mrtvih"
+  },
+  {
+    "day": 25,
+    "month": 12,
+    "name": "Božič"
+  },
+  {
+    "day": 26,
+    "month": 12,
+    "name": "Dan samostojnosti"
+  }
+]

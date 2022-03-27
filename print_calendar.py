@@ -1,3 +1,4 @@
+import json
 import calendar
 from datetime import date
 import getopt
@@ -5,6 +6,11 @@ import sys
 
 cal = calendar.Calendar()
 cell_width = 12
+
+base_path = sys.path[0]
+holidays_filename = "holidays.json"
+holidays_path = base_path + "/" + holidays_filename
+holidays = []
 
 weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -77,11 +83,15 @@ def print_calendar_delimiter():
 
     print("|")
 
+def is_holiday(date):
+    for holiday in holidays:
+        if holiday["day"] == date.day and holiday["month"] == date.month:
+            return True
+    return False
+
 # is the day free of work
 def is_free_day(date):
-    if date.weekday() == 5 or date.weekday() == 6:
-        return True
-    return False
+    return date.weekday() == 5 or date.weekday() == 6 or is_holiday(date)
 
 # prints the center section of the date, without the |
 def print_date_with_colors(date):
@@ -109,23 +119,26 @@ def print_days_section():
         else:
             weekday += 1
 
-def print_calendar(year, month, day=None, event_datetimes=None):
+def print_calendar(year, month, day=None, event_datetimes=None, holidays_parameter=[]):
     global current_year
     global current_month
     global selected_day
     global days_with_events
+    global holidays
 
+    # Set global variables
     current_year = year
     current_month = month
     selected_day = day
     days_with_events = event_datetimes
+    holidays = holidays_parameter
 
     print_month_header()
     print_weekday_header()
     print_calendar_delimiter()
     print_days_section()
 
-if __name__ == '__main__':
+def main():
     # Get arguments
     argv = sys.argv[1:]
     args = getopt.getopt(argv, "y:m:d:")
@@ -144,4 +157,8 @@ if __name__ == '__main__':
         elif key == "-d":
             day = int(val)
 
+    # Display calendar
     print_calendar(year, month, day)
+
+if __name__ == '__main__':
+    main()

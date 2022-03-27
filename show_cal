@@ -10,9 +10,12 @@ from print_calendar import get_month_string
 
 filename = "calendar.json"
 base_path = sys.path[0]
+holidays_filename = "holidays.json"
+holidays_path = base_path + "/" + holidays_filename
 
 # Loaded JSON data 
 data = None
+holidays = []
 
 # Loads data from a json file
 def load_data():
@@ -35,6 +38,13 @@ def load_data():
                 "content": event["content"]
         }
         data.append(parsed_event)
+
+def load_holidays():
+    global holidays
+
+    with open(holidays_path) as fileptr:
+        holidays = json.load(fileptr)
+        fileptr.close()
 
 # Creates 'example_calendar.json' file with an example of an json formatted calendar
 def make_example_calendar_json():
@@ -86,24 +96,44 @@ def format_time(date):
     output = hour + ":" + minute
     return output
 
+def get_holidays_for_selected_day(selected_year, selected_month, selected_day):
+    # TODO: add easter
+    output = []
+    for holiday in holidays:
+        if holiday["day"] == selected_day and holiday["month"] == selected_month:
+            output.append(holiday)
+
+    return output
+
 def print_selected_day_events(selected_year, selected_month, selected_day):
     selected_day_events = get_events_for_date(selected_day, selected_month, selected_year)
-    if len(selected_day_events) == 0:
-        return
-    print()
-    print("# " + get_month_string(selected_month - 1) + " " + str(selected_day))
-    print("## EVENTS:")
+    selected_day_holidays = get_holidays_for_selected_day(selected_year, selected_month, selected_day)
 
-    for event in selected_day_events:
-        print("- ", end='')
-        print("(", end='')
-        print(format_time(event["datetime"]), end='')
-        print(")", end='')
-        print(" [" ,end='')
-        print(event["id"], end='')
-        print("] " ,end='')
-        print(event["title"])
-        print(event["content"])
+    # If there's anything happening that day, print the header
+    if len(selected_day_holidays) != 0 or len(selected_day_events) != 0:
+        print()
+        print("# " + get_month_string(selected_month - 1) + " " + str(selected_day))
+
+    # Print holiday, if any
+    if len(selected_day_holidays) != 0:
+        print("## HOLIDAYS")
+        for holiday in selected_day_holidays:
+            print("- " + holiday["name"])
+
+    # Print event, if any 
+    if len(selected_day_events) != 0: # print events
+        print("## EVENTS")
+
+        for event in selected_day_events:
+            print("- ", end='')
+            print("(", end='')
+            print(format_time(event["datetime"]), end='')
+            print(")", end='')
+            print(" [" ,end='')
+            print(event["id"], end='')
+            print("] " ,end='')
+            print(event["title"])
+            print(event["content"])
 
 
 def main(args):
@@ -123,12 +153,13 @@ def main(args):
 
     # Load data
     load_data()
+    load_holidays()
 
     # Events
     dates_with_events = get_dates_with_events()
 
     # Display calendar
-    print_calendar(selected_year, selected_month, selected_day, dates_with_events)
+    print_calendar(selected_year, selected_month, selected_day, dates_with_events, holidays)
 
     # Display events if any
     print_selected_day_events(selected_year, selected_month, selected_day)
