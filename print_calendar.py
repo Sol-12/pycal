@@ -11,6 +11,7 @@ months = ["January", "February", "March", "April", "May", "June", "July", "Augus
 current_year = 2022
 current_month = 12
 selected_day = 8
+days_with_events = []
 
 class bcolors:
     OK = '\033[92m' #GREEN
@@ -36,8 +37,9 @@ def date_day_to_string(date):
     return output
 
 def date_has_content(date):
-    if date.day == 9:
-        return True
+    for i in days_with_events:
+        if i.year == date.year and i.month == date.month and i.day == date.day:
+            return True
     return False
 
 def get_month_string(month):
@@ -107,14 +109,16 @@ def print_days_section():
         else:
             weekday += 1
 
-def print_calendar(year, month, day=None):
+def print_calendar(year, month, day=None, event_datetimes=None):
     global current_year
     global current_month
     global selected_day
+    global days_with_events
 
     current_year = year
     current_month = month
     selected_day = day
+    days_with_events = event_datetimes
 
     print_month_header()
     print_weekday_header()
@@ -127,9 +131,9 @@ if __name__ == '__main__':
     args = getopt.getopt(argv, "y:m:d:")
 
     # Set default values
-    year = 1970
-    month = 1
-    day = None
+    year = date.today().year
+    month = date.today().month
+    day = date.today().day
 
     # Parse arguments
     for key, val in args[0]:
