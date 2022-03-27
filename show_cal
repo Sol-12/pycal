@@ -8,6 +8,9 @@ from datetime import datetime
 from print_calendar import print_calendar
 from print_calendar import get_month_string
 
+filename = "calendar.json"
+base_path = sys.path[0]
+
 # Loaded JSON data 
 data = None
 
@@ -15,7 +18,9 @@ data = None
 def load_data():
     global data
 
-    file_pointer = open("calendar.json")
+    data_path = base_path + "/" + filename
+
+    file_pointer = open(data_path)
     raw_data = json.load(file_pointer)
     file_pointer.close()
 
