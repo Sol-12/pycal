@@ -87,12 +87,12 @@ def is_free_day(date):
 def print_date_with_colors(date):
     padded_day_string = date_day_to_string(date).center(cell_width)
 
-    if date.day == selected_day:
+    if date.day == selected_day and date.month == current_month:
         print(bcolors.OK + padded_day_string + bcolors.RESET, end='')
-    elif is_free_day(date): # day is only weekend / holiday
-        print(bcolors.FAIL + padded_day_string + bcolors.RESET, end='')
     elif date.month != current_month: # day is only in previous / next month
         print(bcolors.WARNING + padded_day_string + bcolors.RESET, end='')
+    elif is_free_day(date): # day is only weekend / holiday
+        print(bcolors.FAIL + padded_day_string + bcolors.RESET, end='')
     else: # it's a normal day
         print(padded_day_string, end='')
 
