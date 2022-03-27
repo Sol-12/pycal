@@ -1,4 +1,6 @@
 import json
+import getopt
+import sys
 from datetime import datetime
 
 from print_calendar import print_calendar
@@ -79,6 +81,8 @@ def format_time(date):
 
 def print_selected_day_events(selected_year, selected_month, selected_day):
     selected_day_events = get_events_for_date(selected_day, selected_month, selected_year)
+    if len(selected_day_events) == 0:
+        return
     print()
     print("# " + get_month_string(selected_month - 1) + " " + str(selected_day))
     print("## EVENTS:")
@@ -95,11 +99,20 @@ def print_selected_day_events(selected_year, selected_month, selected_day):
         print(event["content"])
 
 
-def main():
-    # Load arguments
-    selected_year = 2022
-    selected_month = 3
-    selected_day = 27
+def main(args):
+    # Default arguments
+    selected_year = datetime.today().year
+    selected_month = datetime.today().month
+    selected_day = datetime.today().day
+
+    # Parse arguments
+    for key, val in args:
+        if key == "-y":
+            selected_year = int(val)
+        elif key == "-m":
+            selected_month = int(val)
+        elif key == "-d":
+            selected_day = int(val)
 
     # Load data
     load_data()
@@ -114,5 +127,8 @@ def main():
     print_selected_day_events(selected_year, selected_month, selected_day)
 
 if __name__ == '__main__':
-    main()
+    # Get arguments
+    argv = sys.argv[1:]
+    args = getopt.getopt(argv, "y:m:d:")
+    main(args[0])
 
