@@ -106,6 +106,7 @@ def get_holidays_for_selected_day(selected_year, selected_month, selected_day):
     return output
 
 def print_selected_day_events(selected_year, selected_month, selected_day):
+
     selected_day_events = get_events_for_date(selected_day, selected_month, selected_year)
     selected_day_holidays = get_holidays_for_selected_day(selected_year, selected_month, selected_day)
 

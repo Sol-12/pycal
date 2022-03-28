@@ -51,7 +51,9 @@ def date_has_content(date):
 def get_month_string(month):
     return months[month]
 
-def print_month_header():
+def get_month_header():
+    output = ""
+
     calendar_width = (cell_width + 1) * 7 + 1
 
     core_string = "| " + str(current_year) + " - " + get_month_string(current_month - 1) + " |"
@@ -60,28 +62,33 @@ def print_month_header():
     for i in range(top_string_width):
         top_string += "-"
     padded_top_string = top_string.center(calendar_width)
-    print(padded_top_string)
+
+    output += padded_top_string + "\n"
 
     padded_core_string = core_string.center(calendar_width)
-    print(padded_core_string)
-    print(padded_top_string)
-    print()
+    output += padded_core_string + "\n"
+    output += padded_top_string + "\n"
+    return output
 
-def print_weekday_header():
+def get_weekday_header():
+    output = ""
     for i in range(7):
         day_string = weekdays[i].center(cell_width)
-        print("|", end='')
-        print(bcolors.FAIL + day_string + bcolors.RESET, end='')
+        output += "|"
+        output += bcolors.FAIL + day_string + bcolors.RESET
 
-    print("|\n", end='')
+    output += "|"
+    return output
 
-def print_calendar_delimiter():
+def get_calendar_delimiter():
+    output = ""
     for i in range(7):
-        print("|", end='')
+        output += "|"
         for i in range(cell_width):
-            print("-", end='')
+            output += "-"
 
-    print("|")
+    output += "|"
+    return output
 
 def is_holiday(date):
     for holiday in holidays:
@@ -93,33 +100,40 @@ def is_holiday(date):
 def is_free_day(date):
     return date.weekday() == 5 or date.weekday() == 6 or is_holiday(date)
 
-# prints the center section of the date, without the |
-def print_date_with_colors(date):
+# returns the center section of the date, without the |
+def get_date_with_colors(date):
+    output = ""
+
     padded_day_string = date_day_to_string(date).center(cell_width)
 
     if date.day == selected_day and date.month == current_month:
-        print(bcolors.OK + padded_day_string + bcolors.RESET, end='')
+        output += bcolors.OK + padded_day_string + bcolors.RESET
     elif date.month != current_month: # day is only in previous / next month
-        print(bcolors.WARNING + padded_day_string + bcolors.RESET, end='')
+        output += bcolors.WARNING + padded_day_string + bcolors.RESET
     elif is_free_day(date): # day is only weekend / holiday
-        print(bcolors.FAIL + padded_day_string + bcolors.RESET, end='')
+        output += bcolors.FAIL + padded_day_string + bcolors.RESET
     else: # it's a normal day
-        print(padded_day_string, end='')
+        output += padded_day_string
 
-def print_days_section():
+    return output
+
+def get_days_section():
+    output = ""
     weekday = 0
     for i in cal.itermonthdates(current_year, current_month):
         if weekday == 0:
-            print("|", end='')
-        print_date_with_colors(i)
-        print("|", end='')
+            output += "|"
+        day = get_date_with_colors(i)
+        output += day
+        output += "|"
         if weekday >= 6:
             weekday = 0
-            print()
+            output += "\n"
         else:
             weekday += 1
+    return output
 
-def print_calendar(year, month, day=None, event_datetimes=None, holidays_parameter=[]):
+def get_calendar_string(year, month, day=None, event_datetimes=[], holidays_parameter=[]):
     global current_year
     global current_month
     global selected_day
@@ -133,10 +147,17 @@ def print_calendar(year, month, day=None, event_datetimes=None, holidays_paramet
     days_with_events = event_datetimes
     holidays = holidays_parameter
 
-    print_month_header()
-    print_weekday_header()
-    print_calendar_delimiter()
-    print_days_section()
+    output = ""
+    output += get_month_header()
+    output += get_weekday_header() + "\n"
+    output += get_calendar_delimiter() + "\n"
+    output += get_days_section()
+
+    return output
+
+def print_calendar(year, month, day=None, event_datetimes=None, holidays_parameter=[]):
+    calendar_string = get_calendar_string(year, month, day, event_datetimes, holidays_parameter)
+    print(calendar_string)
 
 def main():
     # Get arguments
