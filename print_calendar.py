@@ -75,7 +75,7 @@ def get_weekday_header():
     for i in range(7):
         day_string = weekdays[i].center(cell_width)
         output += "|"
-        output += bcolors.FAIL + day_string + bcolors.RESET
+        output += day_string
 
     output += "|"
     return output
@@ -107,11 +107,11 @@ def get_date_with_colors(date):
     padded_day_string = date_day_to_string(date).center(cell_width)
 
     if date.day == selected_day and date.month == current_month:
-        output += bcolors.OK + padded_day_string + bcolors.RESET
+        output += padded_day_string
     elif date.month != current_month: # day is only in previous / next month
-        output += bcolors.WARNING + padded_day_string + bcolors.RESET
+        output += padded_day_string
     elif is_free_day(date): # day is only weekend / holiday
-        output += bcolors.FAIL + padded_day_string + bcolors.RESET
+        output += padded_day_string
     else: # it's a normal day
         output += padded_day_string
 
