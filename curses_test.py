@@ -15,9 +15,6 @@ year = 2022
 month = 2
 day = 28
 
-def day_exists():
-    return True
-
 def next_month():
     global month
     global year
