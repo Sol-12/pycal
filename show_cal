@@ -46,19 +46,6 @@ def load_holidays():
         holidays = json.load(fileptr)
         fileptr.close()
 
-# Creates 'example_calendar.json' file with an example of an json formatted calendar
-def make_example_calendar_json():
-    tmp_datetime = datetime.now()
-
-    example_calendar = [{"id":"1","datetime":tmp_datetime.isoformat(),"content":"example content"}]
-
-    json_string = json.dumps(example_calendar)
-
-    with open("example_calendar.json", "w") as outfile:
-        outfile.write(json_string)
-        outfile.close()
-
-
 # Analyzes data we have an returns all days that have an event
 def get_dates_with_events():
     output = []
