@@ -5,7 +5,7 @@ import getopt
 import sys
 
 cal = calendar.Calendar()
-cell_width = 12
+cell_width = 6
 
 base_path = sys.path[0]
 holidays_filename = "holidays.json"
