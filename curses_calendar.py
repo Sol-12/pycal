@@ -1,7 +1,13 @@
+#!/bin/python3
+
 import curses
 import calendar
+from datetime import date
 from curses import wrapper
 from print_calendar import get_calendar_string
+from show_cal import load_and_get_holidays
+from show_cal import load_and_get_events_dates
+from show_cal import get_selected_day_events_string
 
 # Configuration
 ESCAPE_KEY = "q"
@@ -11,9 +17,9 @@ UP_KEY = "k"
 DOWN_KEY = "j"
 
 # Globals
-year = 2022
-month = 2
-day = 28
+year = date.today().year
+month = date.today().month
+day = date.today().day
 
 def next_month():
     global month
@@ -69,9 +75,17 @@ def main(stdscr):
     stdscr.clear()
     current_key = ""
     while current_key != ESCAPE_KEY:
+        holidays = load_and_get_holidays()
+        events_dates = load_and_get_events_dates()
+
+        calendar_view = get_calendar_string(year, month, day, events_dates, holidays)
+        cal_entries = get_selected_day_events_string(year, month, day)
+
+        to_display = calendar_view + "\n" + cal_entries
+
         # Update display
-        stdscr.addstr(0, 0, get_calendar_string(year, month, day))
-        stdscr.refresh()
+        stdscr.clear()
+        stdscr.addstr(0, 0, to_display)
 
         # Get command
         current_key = stdscr.getkey()

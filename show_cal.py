@@ -123,6 +123,44 @@ def print_selected_day_events(selected_year, selected_month, selected_day):
             print(event["title"])
             print(event["content"])
 
+def load_and_get_events_dates():
+    load_data()
+    return get_dates_with_events()
+
+def load_and_get_holidays():
+    load_holidays()
+    return holidays
+
+def get_selected_day_events_string(selected_year, selected_month, selected_day, selected_day_events = None, selected_day_holidays = None):
+    output = ""
+
+    if selected_day_events == None or selected_day_holidays == None:
+        # Load data
+        load_data()
+        load_holidays()
+
+        selected_day_events = get_events_for_date(selected_day, selected_month, selected_year)
+        selected_day_holidays = get_holidays_for_selected_day(selected_year, selected_month, selected_day)
+
+    # If there's anything happening that day, add the header
+    if len(selected_day_holidays) != 0 or len(selected_day_events) != 0:
+        output += "\n" + "# " + get_month_string(selected_month - 1) + " " + str(selected_day) + "\n"
+
+    # Print holiday, if any
+    if len(selected_day_holidays) != 0:
+        output += "## HOLIDAYS\n"
+        for holiday in selected_day_holidays:
+            output += "- " + holiday["name"] + "\n"
+
+    # Print event, if any 
+    if len(selected_day_events) != 0: # print events
+        output += "## EVENTS\n"
+
+        for event in selected_day_events:
+            output += "- (" + format_time(event["datetime"]) + ")" + " [" + str(event["id"]) + "] " + event["title"] + "\n" + event["content"] + "\n"
+
+    return output
+
 
 def main(args):
     # Default arguments
