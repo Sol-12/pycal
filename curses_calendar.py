@@ -2,12 +2,19 @@
 
 import curses
 import calendar
+
 from datetime import date
+from datetime import datetime
+
 from curses import wrapper
+from curses.textpad import Textbox
+
 from print_calendar import get_calendar_string
 from show_cal import load_and_get_holidays
 from show_cal import load_and_get_events_dates
 from show_cal import get_selected_day_events_string
+
+from add_cal_event import add_event_to_json
 
 # Configuration
 ESCAPE_KEY = "q"
@@ -16,11 +23,14 @@ NEXT_KEY = "l"
 UP_KEY = "k"
 DOWN_KEY = "j"
 
+ADD_EVENT_KEY = "a"
+
 # Globals
 year = date.today().year
 month = date.today().month
 day = date.today().day
 
+# Movement functions
 def next_month():
     global month
     global year
@@ -69,19 +79,35 @@ def next_week():
 def previous_week():
     increment_day(-7)
 
-# Main loop
-def main(stdscr):
+# Add event
+def add_event(stdscr):
+    win = curses.newwin(0, 0)
+    box = Textbox(win)
+    box.edit()
 
-    stdscr.clear()
-    current_key = ""
-    while current_key != ESCAPE_KEY:
+    event_title = box.gather()
+
+    event_datetime = datetime.now()
+    add_event_to_json(event_datetime, event_title, "")
+
+# Render calendar and content
+def get_calendar_with_content_string():
         holidays = load_and_get_holidays()
         events_dates = load_and_get_events_dates()
 
         calendar_view = get_calendar_string(year, month, day, events_dates, holidays)
         cal_entries = get_selected_day_events_string(year, month, day)
+        return calendar_view + "\n" + cal_entries
 
-        to_display = calendar_view + "\n" + cal_entries
+# Main loop
+def main(stdscr):
+    # Init
+    stdscr.clear()
+    current_key = ""
+
+    # Loop
+    while current_key != ESCAPE_KEY:
+        to_display = get_calendar_with_content_string()
 
         # Update display
         stdscr.clear()
@@ -99,6 +125,8 @@ def main(stdscr):
             previous_week()
         elif current_key == DOWN_KEY:
             next_week()
+        elif current_key == ADD_EVENT_KEY:
+            add_event(stdscr)
 
 if __name__ == "__main__":
     wrapper(main)

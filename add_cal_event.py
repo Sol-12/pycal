@@ -41,7 +41,7 @@ def save_event(event):
         fileptr.write(json.dumps(data))
         fileptr.close()
 
-def add_event(datetime, title, content):
+def add_event_to_json(datetime, title, content):
     new_id = get_next_id()
 
     if new_id == None:
@@ -89,7 +89,7 @@ def main(args):
         return
 
     event_datetime = assemble_datetime(selected_year, selected_month, selected_day, hour, minute)
-    add_event(event_datetime, title, content)
+    add_event_to_json(event_datetime, title, content)
 
 if __name__ == '__main__':
     # Get arguments
