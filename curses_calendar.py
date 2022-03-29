@@ -7,7 +7,7 @@ from datetime import date
 from datetime import datetime
 
 from curses import wrapper
-from curses.textpad import Textbox
+from curses.textpad import Textbox, rectangle
 
 from print_calendar import get_calendar_string
 from show_cal import load_and_get_holidays
@@ -81,8 +81,11 @@ def previous_week():
 
 # Add event
 def add_event(stdscr):
-    win = curses.newwin(0, 0)
+    win = curses.newwin(1, 99, 1, 1)
     box = Textbox(win)
+    rectangle(stdscr, 0, 0, 2, 100)
+    stdscr.refresh()
+
     box.edit()
 
     event_title = box.gather()
