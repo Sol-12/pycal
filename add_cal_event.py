@@ -48,11 +48,14 @@ def add_event_to_json(datetime, title, content):
         print("Adding failed, couldn't calculate new id...")
         return
 
+    datetime_iso_format = datetime.isoformat()
+
     event = {
         "id": new_id,
-        "datetime": datetime.isoformat(),
+        "datetime": datetime_iso_format,
         "title": title, 
-        "content": content
+        "content": content,
+        "type": "timeless"
     }
 
     save_event(event)

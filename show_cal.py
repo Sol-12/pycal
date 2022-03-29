@@ -31,11 +31,17 @@ def load_data():
     for event in raw_data:
         raw_event_datetime = event["datetime"]
         event_datetime = datetime.fromisoformat(raw_event_datetime)
+
+        event_type = None
+        if "type" in event: 
+            event_type = event["type"]
+
         parsed_event = {
                 "id": event["id"],
                 "datetime": event_datetime,
                 "title": event["title"],
-                "content": event["content"]
+                "content": event["content"],
+                "type": event_type
         }
         data.append(parsed_event)
 
@@ -157,7 +163,10 @@ def get_selected_day_events_string(selected_year, selected_month, selected_day, 
         output += "## EVENTS\n"
 
         for event in selected_day_events:
-            output += "- (" + format_time(event["datetime"]) + ")" + " [" + str(event["id"]) + "] " + event["title"] + "\n" + event["content"] + "\n"
+            if event["type"] == "timeless":
+                output += "- " + " [" + str(event["id"]) + "] " + event["title"] + "\n" + event["content"] + "\n"
+            else:
+                output += "- (" + format_time(event["datetime"]) + ")" + " [" + str(event["id"]) + "] " + event["title"] + "\n" + event["content"] + "\n"
 
     return output
 

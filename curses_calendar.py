@@ -90,7 +90,7 @@ def add_event(stdscr):
 
     event_title = box.gather()
 
-    event_datetime = datetime.now()
+    event_datetime = datetime(year, month, day)
     add_event_to_json(event_datetime, event_title, "")
 
 # Render calendar and content
