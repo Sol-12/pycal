@@ -3,6 +3,8 @@
 import curses
 import calendar
 
+from enum import Enum
+
 from datetime import date
 from datetime import datetime
 
@@ -16,6 +18,10 @@ from show_cal import get_selected_day_events_string
 
 from add_cal_event import add_event_to_json
 
+class Modes(Enum):
+    CALENDAR = 0
+    EVENTS = 1
+
 # Configuration
 ESCAPE_KEY = "q"
 PREVIOUS_KEY = "h"
@@ -25,10 +31,14 @@ DOWN_KEY = "j"
 
 ADD_EVENT_KEY = "a"
 
+CYCLE_MODE_KEY = "m"
+
 # Globals
 year = date.today().year
 month = date.today().month
 day = date.today().day
+
+mode = Modes.CALENDAR
 
 # Movement functions
 def next_month():
@@ -102,6 +112,41 @@ def get_calendar_with_content_string():
         cal_entries = get_selected_day_events_string(year, month, day)
         return calendar_view + "\n" + cal_entries
 
+def cycle_mode():
+    global mode
+
+    if mode == Modes.CALENDAR:
+        mode = Modes.EVENTS
+    else:
+        mode = Modes.CALENDAR
+
+def handle_key_calendar_mode(key):
+    if key == NEXT_KEY:
+        next_day()
+    elif key == PREVIOUS_KEY:
+        previous_day()
+    elif key == UP_KEY:
+        previous_week()
+    elif key == DOWN_KEY:
+        next_week()
+    elif key == ADD_EVENT_KEY:
+        add_event(stdscr)
+
+def handle_key_event_mode(key):
+    pass
+
+def handle_key_pressed(key):
+
+    # Handle switch mode key
+    if key == CYCLE_MODE_KEY:
+        cycle_mode()
+
+    # Handle key for current mode
+    if mode == Modes.CALENDAR:
+        handle_key_calendar_mode(key)
+    elif mode == Modes.EVENTS:
+        handle_key_event_mode(key)
+
 # Main loop
 def main(stdscr):
     # Init
@@ -119,17 +164,8 @@ def main(stdscr):
         # Get command
         current_key = stdscr.getkey()
 
-        # Handle command
-        if current_key == NEXT_KEY:
-            next_day()
-        elif current_key == PREVIOUS_KEY:
-            previous_day()
-        elif current_key == UP_KEY:
-            previous_week()
-        elif current_key == DOWN_KEY:
-            next_week()
-        elif current_key == ADD_EVENT_KEY:
-            add_event(stdscr)
+        # Handle the command
+        handle_key_pressed(current_key)
 
 if __name__ == "__main__":
     wrapper(main)
