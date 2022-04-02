@@ -145,7 +145,7 @@ def cycle_mode():
         selected_event = None
         mode = Modes.CALENDAR
 
-def handle_key_calendar_mode(key):
+def handle_key_calendar_mode(key, stdscr):
     if key == NEXT_KEY:
         next_day()
     elif key == PREVIOUS_KEY:
@@ -165,7 +165,7 @@ def handle_key_event_mode(key):
     elif key == NEXT_KEY:
         open_event()
 
-def handle_key_pressed(key):
+def handle_key_pressed(key, stdscr):
 
     # Handle switch mode key
     if key == CYCLE_MODE_KEY:
@@ -174,7 +174,7 @@ def handle_key_pressed(key):
 
     # Handle key for current mode
     if mode == Modes.CALENDAR:
-        handle_key_calendar_mode(key)
+        handle_key_calendar_mode(key, stdscr)
     elif mode == Modes.EVENTS:
         handle_key_event_mode(key)
 
@@ -196,7 +196,7 @@ def main(stdscr):
         current_key = stdscr.getkey()
 
         # Handle the command
-        handle_key_pressed(current_key)
+        handle_key_pressed(current_key, stdscr)
 
 def test_main():
     manager = EventManager()

@@ -172,7 +172,10 @@ def get_selected_day_events_string(selected_year, selected_month, selected_day, 
                     output += "- " + " [" + str(event["id"]) + "] " + event["title"] + "\n" + event["content"] + "\n"
             else:
                 # Event with time
-                output += "- (" + format_time(event["datetime"]) + ")" + " [" + str(event["id"]) + "] " + event["title"] + "\n" + event["content"] + "\n"
+                if selected_event == event_counter:
+                    output += "- (" + format_time(event["datetime"]) + ")" + " ([" + str(event["id"]) + "]) " + event["title"] + "\n" + event["content"] + "\n"
+                else:
+                    output += "- (" + format_time(event["datetime"]) + ")" + " [" + str(event["id"]) + "] " + event["title"] + "\n" + event["content"] + "\n"
 
             event_counter += 1
 

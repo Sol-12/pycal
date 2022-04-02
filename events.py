@@ -28,12 +28,17 @@ class Event:
     def get_date_format(self):
         return str(self.datetime.day) + "/" + str(self.datetime.month) + "/" + str(self.datetime.year)
 
+    def get_time_format(self):
+        return str(self.datetime.hour) + ":" + str(self.datetime.minute)
+
     def to_vim_string(self):
         output = "# " + self.title + "\n\n"
         output += "---\n\n"
         output += "ID: " + str(self.id) + "\n"
-        output += "Date: " + self.get_date_format() + "\n\n"
-        output += "---\n\n"
+        output += "Date: " + self.get_date_format() + "\n"
+        if self.type != "timeless":
+            output += "Time: " + self.get_time_format() + "\n"
+        output += "\n---\n\n"
         output += self.content
         return output
 
@@ -49,6 +54,7 @@ class Event:
         parsed_id = None
         parsed_date = None
         parsed_content = ""
+        parsed_time = None
         
         tmp_event_string = ""
         with open('tmp_event.md') as fileptr:
@@ -79,6 +85,29 @@ class Event:
                     # If meta section ended
                     if meta_section_split_counter > 1:
                         section_inx += 1
+                split_line = line.split(":")
+                if len(split_line) > 1:
+                    keyword = split_line[0]
+
+                    # Get all what comes after the first : as the value
+                    value = ""
+                    for i in split_line[1:]:
+                        value += i + ":"
+                    value = value[:len(value)-1]
+
+                    # Clean value
+                    value = value.strip()
+
+                    if keyword == "Time":
+                        hour_minute = value.split(":")
+                        print(hour_minute)
+
+                        if len(hour_minute) > 1:
+                            hour = int(hour_minute[0])
+                            minute = int(hour_minute[1])
+                            
+                            parsed_time = datetime(self.datetime.year, self.datetime.month, self.datetime.day, hour, minute)
+
             else:
                 # Content section
                 parsed_content += line + "\n"
@@ -97,13 +126,17 @@ class Event:
         if parsed_content != "":
             self.content = parsed_content
 
+        if parsed_time != None:
+            self.datetime = parsed_time
+            self.type = None
+
     def to_json(self):
         return {
             "id": self.id,
             "datetime": self.datetime.isoformat(),
             "title": self.title, 
             "content": self.content,
-            "type": "timeless"
+            "type": self.type
         }
 
 # Read and write events
