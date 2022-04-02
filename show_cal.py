@@ -137,7 +137,7 @@ def load_and_get_holidays():
     load_holidays()
     return holidays
 
-def get_selected_day_events_string(selected_year, selected_month, selected_day, selected_day_events = None, selected_day_holidays = None):
+def get_selected_day_events_string(selected_year, selected_month, selected_day, selected_day_events = None, selected_day_holidays = None, selected_event = None):
     output = ""
 
     if selected_day_events == None or selected_day_holidays == None:
@@ -152,21 +152,29 @@ def get_selected_day_events_string(selected_year, selected_month, selected_day, 
     if len(selected_day_holidays) != 0 or len(selected_day_events) != 0:
         output += "\n" + "# " + get_month_string(selected_month - 1) + " " + str(selected_day) + "\n"
 
-    # Print holiday, if any
+    # Add holidays, if any
     if len(selected_day_holidays) != 0:
         output += "## HOLIDAYS\n"
         for holiday in selected_day_holidays:
             output += "- " + holiday["name"] + "\n"
 
-    # Print event, if any 
-    if len(selected_day_events) != 0: # print events
+    # Add events, if any 
+    if len(selected_day_events) != 0:
         output += "## EVENTS\n"
 
+        event_counter = 0
         for event in selected_day_events:
             if event["type"] == "timeless":
-                output += "- " + " [" + str(event["id"]) + "] " + event["title"] + "\n" + event["content"] + "\n"
+                # Event without time
+                if selected_event == event_counter:
+                    output += "- " + " ([" + str(event["id"]) + "]) " + event["title"] + "\n" + event["content"] + "\n"
+                else:
+                    output += "- " + " [" + str(event["id"]) + "] " + event["title"] + "\n" + event["content"] + "\n"
             else:
+                # Event with time
                 output += "- (" + format_time(event["datetime"]) + ")" + " [" + str(event["id"]) + "] " + event["title"] + "\n" + event["content"] + "\n"
+
+            event_counter += 1
 
     return output
 

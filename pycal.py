@@ -18,6 +18,8 @@ from show_cal import get_selected_day_events_string
 
 from add_cal_event import add_event_to_json
 
+from events import EventManager, Event
+
 class Modes(Enum):
     CALENDAR = 0
     EVENTS = 1
@@ -37,6 +39,8 @@ CYCLE_MODE_KEY = "m"
 year = date.today().year
 month = date.today().month
 day = date.today().day
+
+selected_event = None
 
 mode = Modes.CALENDAR
 
@@ -58,6 +62,22 @@ def previous_month():
         month = 12
     else:
         month -= 1
+
+def next_event():
+    global selected_event
+
+    selected_event += 1
+
+def previous_event():
+    global selected_event
+    
+    if selected_event > 0:
+        selected_event -= 1
+
+def open_event():
+    manager = EventManager()
+    event = manager.get_event_on_date(day, month, year, event_inx=selected_event)
+    event.open_in_vim()
 
 def increment_day(val):
     global year
@@ -109,15 +129,18 @@ def get_calendar_with_content_string():
         events_dates = load_and_get_events_dates()
 
         calendar_view = get_calendar_string(year, month, day, events_dates, holidays)
-        cal_entries = get_selected_day_events_string(year, month, day)
+        cal_entries = get_selected_day_events_string(year, month, day, selected_event=selected_event)
         return calendar_view + "\n" + cal_entries
 
 def cycle_mode():
     global mode
+    global selected_event
 
     if mode == Modes.CALENDAR:
         mode = Modes.EVENTS
+        selected_event = 0
     else:
+        selected_event = None
         mode = Modes.CALENDAR
 
 def handle_key_calendar_mode(key):
@@ -133,13 +156,19 @@ def handle_key_calendar_mode(key):
         add_event(stdscr)
 
 def handle_key_event_mode(key):
-    pass
+    if key == UP_KEY:
+        previous_event()
+    elif key == DOWN_KEY:
+        next_event()
+    elif key == NEXT_KEY:
+        open_event()
 
 def handle_key_pressed(key):
 
     # Handle switch mode key
     if key == CYCLE_MODE_KEY:
         cycle_mode()
+        return
 
     # Handle key for current mode
     if mode == Modes.CALENDAR:
