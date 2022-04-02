@@ -78,6 +78,8 @@ def open_event():
     manager = EventManager()
     event = manager.get_event_on_date(day, month, year, event_inx=selected_event)
     event.open_in_vim()
+    event.parse_tmp_vim_file()
+    manager.write_to_file()
 
 def increment_day(val):
     global year
@@ -196,5 +198,13 @@ def main(stdscr):
         # Handle the command
         handle_key_pressed(current_key)
 
+def test_main():
+    manager = EventManager()
+    event = manager.get_event_on_date(day, month, year, event_inx=0)
+    event.open_in_vim()
+    event.parse_tmp_vim_file()
+    print(manager.get_event_on_date(day, month, year, event_inx=0).to_vim_string())
+
 if __name__ == "__main__":
     wrapper(main)
+    #test_main()

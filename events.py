@@ -44,6 +44,67 @@ class Event:
 
         os.system("nvim tmp_event.md")
 
+    def parse_tmp_vim_file(self):
+        parsed_title = None
+        parsed_id = None
+        parsed_date = None
+        parsed_content = ""
+        
+        tmp_event_string = ""
+        with open('tmp_event.md') as fileptr:
+            tmp_event_string = fileptr.read()
+            fileptr.close()
+
+        if tmp_event_string == "":
+            return
+
+        split_string = tmp_event_string.split('\n')
+
+        # 0 - title section, 1 - meta section, 2 description section
+        section_inx = 0 
+
+        meta_section_split_counter = 0
+        for line in split_string:
+            if section_inx == 0:
+                # Title section
+                if line[:2] == "# ": 
+                    # Parse title
+                    parsed_title = line[2:]
+                    section_inx += 1
+            elif section_inx == 1:
+                # Meta section
+                if line[:3] == "---":
+                    meta_section_split_counter += 1
+
+                    # If meta section ended
+                    if meta_section_split_counter > 1:
+                        section_inx += 1
+            else:
+                # Content section
+                parsed_content += line + "\n"
+
+        # Clean parsed content
+        if parsed_content[:1] == "\n":
+            parsed_content = parsed_content[1:]
+
+        if parsed_content[len(parsed_content)-2:] == "\n\n":
+            parsed_content = parsed_content[:len(parsed_content)-2]
+
+        # Apply changes
+        if parsed_title != None:
+            self.title = parsed_title
+
+        if parsed_content != "":
+            self.content = parsed_content
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "datetime": self.datetime.isoformat(),
+            "title": self.title, 
+            "content": self.content,
+            "type": "timeless"
+        }
 
 # Read and write events
 class EventManager:
@@ -83,4 +144,18 @@ class EventManager:
             return events_on_date[event_inx]
 
         return None
+
+    def write_to_file(self):
+        filename = "calendar.json"
+        base_path = sys.path[0]
+        data_path = base_path + "/" + filename
+
+        json_array = []
+        for event in self.events:
+            json_array.append(event.to_json())
+
+        with open(data_path, 'w') as fileptr:
+            fileptr.write(json.dumps(json_array))
+            fileptr.close()
+
 
