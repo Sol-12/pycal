@@ -17,8 +17,7 @@ from show_cal import load_and_get_events_dates
 from show_cal import get_selected_day_events_string
 
 from add_cal_event import add_event_to_json
-
-from events import EventManager, Event
+from events.event_manager import EventManager
 
 class Modes(Enum):
     CALENDAR = 0
