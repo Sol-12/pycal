@@ -5,20 +5,30 @@ from datetime import datetime
 
 # Event model
 class Event:
-    def __init__(self, jsonObj):
-        self.id = jsonObj["id"]
-        self.title = jsonObj["title"]
+    def __init__(self, jsonObj=None, event_datetime=None, title=None, content=None):
+        if jsonObj != None:
+            # Parse an event from JSON
+            self.id = jsonObj["id"]
+            self.title = jsonObj["title"]
 
-        raw_event_datetime = jsonObj["datetime"]
-        event_datetime = datetime.fromisoformat(raw_event_datetime)
-        self.datetime = event_datetime
+            raw_event_datetime = jsonObj["datetime"]
+            event_datetime = datetime.fromisoformat(raw_event_datetime)
+            self.datetime = event_datetime
 
-        self.content = jsonObj["content"]
+            self.content = jsonObj["content"]
 
-        event_type = None
-        if "type" in jsonObj: 
-            event_type = jsonObj["type"]
-        self.type = event_type
+            event_type = None
+            if "type" in jsonObj: 
+                event_type = jsonObj["type"]
+            self.type = event_type
+        else:
+            # Create new event from passed parameters
+            self.id = None
+            self.datetime = event_datetime
+            self.title = title
+            self.content = content
+            # TODO: change this when we add types in the future
+            self.type = "timeless"
 
     def is_on_date(self, day, month, year):
         return self.datetime.day == day and self.datetime.month == month and self.datetime.year == year

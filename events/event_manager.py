@@ -56,3 +56,19 @@ class EventManager:
         with open(data_path, 'w') as fileptr:
             fileptr.write(json.dumps(json_array))
             fileptr.close()
+
+    def get_next_id(self):
+        highest_id = 0
+        for event in self.events:
+            if event.id > highest_id:
+                highest_id = event.id
+
+        new_id = highest_id + 1
+        return new_id
+
+    def add_event(self, event):
+        if event.id == None:
+            event.id = self.get_next_id()
+
+        self.events.append(event)
+        self.write_to_file()

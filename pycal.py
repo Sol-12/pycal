@@ -16,7 +16,7 @@ from show_cal import load_and_get_holidays
 from show_cal import load_and_get_events_dates
 from show_cal import get_selected_day_events_string
 
-from add_cal_event import add_event_to_json
+from events.events import Event
 from events.event_manager import EventManager
 
 class Modes(Enum):
@@ -122,7 +122,10 @@ def add_event(stdscr):
     event_title = box.gather()
 
     event_datetime = datetime(year, month, day)
-    add_event_to_json(event_datetime, event_title, "")
+
+    manager = EventManager()
+    event = Event(event_datetime=event_datetime, title=event_title, content="")
+    manager.add_event(event)
 
 # Render calendar and content
 def get_calendar_with_content_string():
@@ -199,10 +202,9 @@ def main(stdscr):
 
 def test_main():
     manager = EventManager()
-    event = manager.get_event_on_date(day, month, year, event_inx=0)
-    event.open_in_vim()
-    event.parse_tmp_vim_file()
-    print(manager.get_event_on_date(day, month, year, event_inx=0).to_vim_string())
+    #print("before init")
+    #event = Event(datetime=datetime(year, month, day), title="", content="")
+    #manager.add_event(event)
 
 if __name__ == "__main__":
     wrapper(main)
