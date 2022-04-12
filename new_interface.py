@@ -42,6 +42,7 @@ class Color:
 # Define colors
 color_white = None
 color_red = None
+color_blue = None
 
 # Get config
 config = Configuration()
@@ -50,9 +51,11 @@ mode = Modes.CALENDAR
 def init_colors():
     global color_white
     global color_red
+    global color_blue
 
     color_white = Color(highlight_foreground_color=curses.COLOR_BLACK)
     color_red = Color(standard_color = curses.COLOR_RED)
+    color_blue = Color(standard_color=curses.COLOR_BLUE)
 
 def draw_weekdays(window):
     window.addstr("|", curses.color_pair(color_white.standard_color_id))
@@ -91,11 +94,13 @@ def get_color_for_date(date):
     output_color_id = 0
 
     # Check if special day
-    if is_holiday(date):
+    if date.month != current_month:
+        selected_color_object = color_blue
+    elif is_holiday(date):
         selected_color_object = color_red
 
     # Check if highlighted
-    if date.day == current_day:
+    if date.day == current_day and date.month == current_month:
         return selected_color_object.highlight_color_id
 
     return selected_color_object.standard_color_id
