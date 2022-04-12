@@ -1,19 +1,21 @@
 import curses
-from curses import wrapper
-
 import calendar
+
+from curses import wrapper
+from datetime import date
 
 from enum import Enum
 
 from config.configuration import Configuration
 
-current_year = 2022
-current_month = 4
-current_day = 10
+current_year = date.today().year
+current_month = date.today().month
+current_day = date.today().day
 
 cal = calendar.Calendar()
 cell_width = 6
 weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 class Modes(Enum):
     CALENDAR = 0
@@ -56,6 +58,26 @@ def init_colors():
     color_white = Color(highlight_foreground_color=curses.COLOR_BLACK)
     color_red = Color(standard_color = curses.COLOR_RED)
     color_blue = Color(standard_color=curses.COLOR_BLUE)
+
+def get_month_string(month):
+    return months[month]
+
+def draw_month_header(window):
+    calendar_width = (cell_width + 1) * 7 + 1
+
+    core_string = "| " + str(current_year) + " - " + get_month_string(current_month - 1) + " |"
+    top_string_width = len(core_string)
+    top_string = ""
+    for i in range(top_string_width):
+        top_string += "-"
+    padded_top_string = top_string.center(calendar_width)
+
+    padded_top_string += "\n"
+    window.addstr(padded_top_string)
+
+    padded_core_string = core_string.center(calendar_width) + "\n"
+    window.addstr(padded_core_string)
+    window.addstr(padded_top_string)
 
 def draw_weekdays(window):
     window.addstr("|", curses.color_pair(color_white.standard_color_id))
@@ -123,6 +145,8 @@ def draw_calendar_days(window):
 
 def draw_calendar(window):
     window.clear()
+    draw_month_header(window)
+    window.addstr("\n")
     draw_weekdays(window)
     draw_calendar_delimiter(window)
     draw_calendar_days(window)
@@ -263,7 +287,7 @@ def main(stdscr):
     # Init
     curses.use_default_colors()
     stdscr.clear()
-    win_height = 10
+    win_height = 14
     win_width = 60
     win_start_x = 0
     win_start_y = 0
