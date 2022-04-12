@@ -51,7 +51,7 @@ def init_colors():
     global color_white
     global color_red
 
-    color_white = Color()
+    color_white = Color(highlight_foreground_color=curses.COLOR_BLACK)
     color_red = Color(standard_color = curses.COLOR_RED)
 
 def draw_weekdays(window):
