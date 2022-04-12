@@ -138,7 +138,6 @@ def draw_calendar(window, year, month, day):
     current_month = month
     current_day = day
 
-    init_colors()
     window.clear()
 
     draw_month_header(window)
@@ -157,4 +156,7 @@ def init_calendar_window():
 
     # Init window
     window = curses.newwin(win_height, win_width, win_start_y, win_start_x)
+
+    # Init colors
+    init_colors()
     return window

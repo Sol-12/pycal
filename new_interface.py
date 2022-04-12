@@ -1,13 +1,10 @@
 import curses
-import calendar
 
 from curses import wrapper
-from datetime import date
-
-from enum import Enum
 
 from config.configuration import Configuration
 from ui.draw_calendar import draw_calendar
+from ui.draw_calendar import init_calendar_window
 
 from handle_command import State
 from handle_command import handle_key_pressed
@@ -24,13 +21,9 @@ def main(stdscr):
     # Init
     curses.use_default_colors()
     stdscr.clear()
-    win_height = 14
-    win_width = 60
-    win_start_x = 0
-    win_start_y = 0
 
     # Init window
-    window = curses.newwin(win_height, win_width, win_start_y, win_start_x)
+    window = init_calendar_window()
     stdscr.refresh()
 
     current_key = ""
