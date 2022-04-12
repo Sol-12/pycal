@@ -147,3 +147,14 @@ def draw_calendar(window, year, month, day):
     draw_calendar_delimiter(window)
     draw_calendar_days(window)
     window.refresh()
+
+# Returns new window object that should house the calendar section
+def init_calendar_window():
+    win_height = 14
+    win_width = 60
+    win_start_x = 0
+    win_start_y = 0
+
+    # Init window
+    window = curses.newwin(win_height, win_width, win_start_y, win_start_x)
+    return window
