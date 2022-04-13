@@ -1,3 +1,5 @@
+import json
+import sys
 import curses
 from curses import wrapper
 
@@ -12,6 +14,15 @@ current_state = State()
 
 # Get config
 config = Configuration()
+
+def get_holidays():
+    base_path = sys.path[0]
+    holidays_filename = "holidays.json"
+    holidays_path = base_path + "/" + holidays_filename
+    with open(holidays_path) as fileptr:
+        holidays = json.load(fileptr)
+        fileptr.close()
+        return holidays
 
 # Main loop
 def main(stdscr):
@@ -33,9 +44,10 @@ def main(stdscr):
         event_manager = EventManager()
         events = event_manager.get_events_for_date(current_state.day, current_state.month, current_state.year)
         events_dates = event_manager.get_dates_with_events()
+        holidays = get_holidays()
 
         # Update display
-        draw_calendar(window, current_state.year, current_state.month, current_state.day, events_dates)
+        draw_calendar(window, current_state.year, current_state.month, current_state.day, events_dates, holidays)
 
         # Get command
         current_key = stdscr.getkey()

@@ -42,6 +42,7 @@ current_month = 1
 current_day = 1
 
 events_dates = []
+holidays = []
 
 def init_colors():
     global color_white
@@ -101,8 +102,14 @@ def get_date_string(date):
         output = str(date.day)
     return output.center(cell_width)
 
-def is_holiday(date):
+def is_weekend(date):
     return date.weekday() == 6 or date.weekday() == 5
+
+def is_holiday(date):
+    for holiday in holidays:
+        if holiday["day"] == date.day and holiday["month"] == date.month:
+            return True
+    return False
 
 def date_has_content(date):
     for i in events_dates:
@@ -116,7 +123,7 @@ def get_color_for_date(date):
     # Check if special day
     if date.month != current_month:
         selected_color_object = color_blue
-    elif is_holiday(date):
+    elif is_weekend(date) or is_holiday(date):
         selected_color_object = color_red
 
     # Check if highlighted
@@ -144,17 +151,19 @@ def draw_calendar_days(window):
         else:
             weekday += 1
 
-def draw_calendar(window, year, month, day, dates_with_events=[]):
+def draw_calendar(window, year, month, day, dates_with_events=[], holidays_parameter=[]):
     global current_year
     global current_month
     global current_day
     global events_dates
+    global holidays
 
     current_year = year
     current_month = month
     current_day = day
 
     events_dates = dates_with_events
+    holidays = holidays_parameter
 
     window.clear()
 
