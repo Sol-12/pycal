@@ -1,5 +1,5 @@
-import json
 import os
+import sys
 
 from datetime import datetime
 
@@ -51,11 +51,14 @@ class Event:
         return output
 
     def open_in_vim(self):
-        with open('tmp_event.md', 'w') as fileptr:
+        base_path = sys.path[0]
+        tmp_event_filepath = base_path + 'tmp_event.md'
+        with open(tmp_event_filepath, 'w') as fileptr:
             fileptr.write(self.to_vim_string())
             fileptr.close()
 
-        os.system("nvim tmp_event.md")
+        command = "nvim " + tmp_event_filepath
+        os.system(command)
 
     def parse_tmp_vim_file(self):
         parsed_title = None
@@ -65,7 +68,10 @@ class Event:
         parsed_time = None
         
         tmp_event_string = ""
-        with open('tmp_event.md') as fileptr:
+
+        base_path = sys.path[0]
+        tmp_event_filepath = base_path + 'tmp_event.md'
+        with open(tmp_event_filepath) as fileptr:
             tmp_event_string = fileptr.read()
             fileptr.close()
 
