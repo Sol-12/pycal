@@ -137,7 +137,7 @@ def draw_calendar(window, year, month, day, dates_with_events=[], holidays_param
 
 # Returns new window object that should house the calendar section
 def init_calendar_window():
-    win_height = 14
+    win_height = 12
     win_width = 60
     win_start_x = 0
     win_start_y = 0

@@ -59,9 +59,11 @@ def previous_event():
 def open_event():
     manager = EventManager()
     event = manager.get_event_on_date(current_state.day, current_state.month, current_state.year, event_inx=current_state.selected_event)
-    event.open_in_vim()
-    event.parse_tmp_vim_file()
-    manager.write_to_file()
+
+    if event != None:
+        event.open_in_vim()
+        event.parse_tmp_vim_file()
+        manager.write_to_file()
 
 def increment_day(val):
     global current_state
@@ -144,7 +146,7 @@ def handle_key_pressed(key, stdscr):
     # Handle switch mode key
     if key == config.CYCLE_MODE_KEY:
         cycle_mode()
-        return
+        return current_state
 
     # Handle key for current mode
     if current_state.mode == Modes.CALENDAR:

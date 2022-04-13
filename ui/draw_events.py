@@ -57,7 +57,7 @@ def init_events_window():
     win_height = 60
     win_width = 60
     win_start_x = 0
-    win_start_y = 15
+    win_start_y = 12
 
     # Init window
     window = curses.newwin(win_height, win_width, win_start_y, win_start_x)

@@ -26,6 +26,14 @@ def get_holidays():
         fileptr.close()
         return holidays
 
+def get_todays_holidays(holidays):
+    output = []
+    for holiday in holidays:
+        if holiday["month"] == current_state.month and holiday["day"] == current_state.day:
+            output.append(holiday)
+
+    return output
+
 # Main loop
 def main(stdscr):
     global current_state
@@ -49,16 +57,19 @@ def main(stdscr):
         events = event_manager.get_events_for_date(current_state.day, current_state.month, current_state.year)
         events_dates = event_manager.get_dates_with_events()
         holidays = get_holidays()
+        todays_holidays = get_todays_holidays(holidays)
 
         # Update display
         draw_calendar(calendar_window, current_state.year, current_state.month, current_state.day, events_dates, holidays)
-        draw_events(events_window, current_state, events, [])
+        draw_events(events_window, current_state, events, todays_holidays)
 
         # Get command
         current_key = stdscr.getkey()
 
         # Handle the command
         current_state = handle_key_pressed(current_key, stdscr)
+
+    stdscr.clear()
 
 if __name__ == "__main__":
     wrapper(main)
