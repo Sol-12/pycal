@@ -95,9 +95,9 @@ def previous_week():
 
 # Add event
 def add_event(stdscr):
-    win = curses.newwin(1, 99, 1, 1)
+    win = curses.newwin(1, 50, 1, 1)
     box = Textbox(win)
-    rectangle(stdscr, 0, 0, 2, 100)
+    rectangle(stdscr, 0, 0, 2, 52)
     stdscr.refresh()
 
     box.edit()
