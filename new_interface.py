@@ -69,6 +69,8 @@ def main(stdscr):
         # Handle the command
         current_state = handle_key_pressed(current_key, stdscr)
 
+    calendar_window.clear()
+    events_window.clear()
     stdscr.clear()
 
 if __name__ == "__main__":

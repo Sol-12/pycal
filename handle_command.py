@@ -23,7 +23,7 @@ class State:
         self.day = date.today().day
 
         self.mode = Modes.CALENDAR
-        self.selected_event = 0
+        self.selected_event = None
 
 current_state = State()
 config = Configuration()
@@ -118,7 +118,7 @@ def cycle_mode():
         current_state.mode = Modes.EVENTS
         current_state.selected_event = 0
     else:
-        current_state.selected_event = 0
+        current_state.selected_event = None
         current_state.mode = Modes.CALENDAR
 
 def handle_key_calendar_mode(key, stdscr):
