@@ -4,12 +4,15 @@ import calendar
 class Color:
     last_color_id = 0
 
-    def __init__(self, standard_color=curses.COLOR_WHITE, highlight_foreground_color=None, highlight_background_color=curses.COLOR_WHITE):
+    def __init__(self, standard_color=curses.COLOR_WHITE, standard_highlight_color=-1, highlight_foreground_color=None, highlight_background_color=curses.COLOR_WHITE, alt_highlight_foreground_color=None, alt_highlight_background_color=curses.COLOR_YELLOW):
         self.standard_color = standard_color
         self.highlight_background_color = highlight_background_color
 
         if highlight_foreground_color == None:
             highlight_foreground_color = standard_color
+
+        if alt_highlight_foreground_color == None:
+            alt_highlight_foreground_color = standard_color
 
         self.highlight_foreground_color = highlight_foreground_color
 
@@ -17,9 +20,12 @@ class Color:
         self.standard_color_id = Color.last_color_id
         Color.last_color_id += 1
         self.highlight_color_id = Color.last_color_id
+        Color.last_color_id += 1
+        self.alt_highlight_color_id = Color.last_color_id
         
-        curses.init_pair(self.standard_color_id, standard_color, -1)
+        curses.init_pair(self.standard_color_id, standard_color, standard_highlight_color)
         curses.init_pair(self.highlight_color_id, highlight_foreground_color, highlight_background_color)
+        curses.init_pair(self.alt_highlight_color_id, alt_highlight_foreground_color, alt_highlight_background_color)
 
 # Define colors
 color_white: Color
@@ -35,13 +41,14 @@ current_year = 2022
 current_month = 1
 current_day = 1
 
+events_dates = []
 
 def init_colors():
     global color_white
     global color_red
     global color_blue
 
-    color_white = Color(highlight_foreground_color=curses.COLOR_BLACK)
+    color_white = Color(highlight_foreground_color=curses.COLOR_BLACK, alt_highlight_foreground_color=curses.COLOR_BLACK)
     color_red = Color(standard_color = curses.COLOR_RED)
     color_blue = Color(standard_color=curses.COLOR_BLUE)
 
@@ -97,9 +104,14 @@ def get_date_string(date):
 def is_holiday(date):
     return date.weekday() == 6 or date.weekday() == 5
 
+def date_has_content(date):
+    for i in events_dates:
+        if i.year == date.year and i.month == date.month and i.day == date.day:
+            return True
+    return False
+
 def get_color_for_date(date):
     selected_color_object = color_white
-    output_color_id = 0
 
     # Check if special day
     if date.month != current_month:
@@ -110,6 +122,9 @@ def get_color_for_date(date):
     # Check if highlighted
     if date.day == current_day and date.month == current_month:
         return selected_color_object.highlight_color_id
+
+    if date_has_content(date):
+        return selected_color_object.alt_highlight_color_id
 
     return selected_color_object.standard_color_id
 
@@ -129,14 +144,17 @@ def draw_calendar_days(window):
         else:
             weekday += 1
 
-def draw_calendar(window, year, month, day):
+def draw_calendar(window, year, month, day, dates_with_events=[]):
     global current_year
     global current_month
     global current_day
+    global events_dates
 
     current_year = year
     current_month = month
     current_day = day
+
+    events_dates = dates_with_events
 
     window.clear()
 

@@ -1,9 +1,16 @@
 import calendar
+import curses
+from curses.textpad import Textbox, rectangle
 
 from datetime import date
+from datetime import datetime
+
 from enum import Enum
 
 from config.configuration import Configuration
+
+from events.events import Event
+from events.event_manager import EventManager
 
 class Modes(Enum):
     CALENDAR = 0
@@ -51,7 +58,7 @@ def previous_event():
 
 def open_event():
     manager = EventManager()
-    event = manager.get_event_on_date(day, month, year, event_inx=selected_event)
+    event = manager.get_event_on_date(current_state.day, current_state.month, current_state.year, event_inx=current_state.selected_event)
     event.open_in_vim()
     event.parse_tmp_vim_file()
     manager.write_to_file()
@@ -95,7 +102,7 @@ def add_event(stdscr):
 
     event_title = box.gather()
 
-    event_datetime = datetime(year, month, day)
+    event_datetime = datetime(current_state.year, current_state.month, current_state.day)
 
     manager = EventManager()
     event = Event(event_datetime=event_datetime, title=event_title, content="")

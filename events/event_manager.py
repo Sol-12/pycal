@@ -27,6 +27,14 @@ class EventManager:
 
         return data
 
+# Analyzes data we have an returns all days that have an event
+    def get_dates_with_events(self):
+        output = []
+        for event in self.events:
+            output.append(event.datetime)
+
+        return output
+
     def get_events_for_date(self, day, month, year):
         output = []
 
@@ -36,7 +44,7 @@ class EventManager:
 
         return output
 
-    def get_event_on_date(self, day, month, year, event_inx):
+    def get_event_on_date(self, day, month, year, event_inx) -> Event:
         events_on_date = self.get_events_for_date(day, month, year)
 
         if len(events_on_date) > event_inx:
