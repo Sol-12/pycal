@@ -1,64 +1,24 @@
 #!/bin/python3
 
+# Enables adding an event from cli
+
 import json
 import getopt
 import sys
+
 from datetime import datetime
+
+from events.event_manager import EventManager
+from events.events import Event
 
 filename = "calendar.json"
 base_path = sys.path[0]
 data_path = base_path + "/" + filename
 
-def assemble_datetime(year, month, day, hour, minute):
-    return datetime(year, month, day, hour, minute)
-
-def get_next_id():
-    data = None
-    with open(data_path) as fileptr:
-        data = json.load(fileptr)
-        fileptr.close()
-
-    if data == None:
-        return None
-
-    highest_id = 0
-    for event in data:
-        if event["id"] > highest_id:
-            highest_id = event["id"]
-
-    new_id = highest_id + 1
-    return new_id
-
-def save_event(event):
-    data = None
-    with open(data_path) as fileptr:
-        data = json.load(fileptr)
-        fileptr.close()
-
-    data.append(event)
-
-    with open(data_path, 'w') as fileptr:
-        fileptr.write(json.dumps(data))
-        fileptr.close()
-
 def add_event_to_json(datetime, title, content):
-    new_id = get_next_id()
-
-    if new_id == None:
-        print("Adding failed, couldn't calculate new id...")
-        return
-
-    datetime_iso_format = datetime.isoformat()
-
-    event = {
-        "id": new_id,
-        "datetime": datetime_iso_format,
-        "title": title, 
-        "content": content,
-        "type": "timeless"
-    }
-
-    save_event(event)
+    manager = EventManager()
+    event = Event(datetime=datetime, title=title, content=content)
+    manager.add_event(event)
 
 def main(args):
     # Default arguments
@@ -91,7 +51,7 @@ def main(args):
         print("Title (-t) option is required")
         return
 
-    event_datetime = assemble_datetime(selected_year, selected_month, selected_day, hour, minute)
+    event_datetime = datetime(selected_year, selected_month, selected_day, hour, minute)
     add_event_to_json(event_datetime, title, content)
 
 if __name__ == '__main__':
