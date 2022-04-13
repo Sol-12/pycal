@@ -1,36 +1,6 @@
 import curses
 import calendar
-
-class Color:
-    last_color_id = 0
-
-    def __init__(self, standard_color=curses.COLOR_WHITE, standard_highlight_color=-1, highlight_foreground_color=None, highlight_background_color=curses.COLOR_WHITE, alt_highlight_foreground_color=None, alt_highlight_background_color=curses.COLOR_YELLOW):
-        self.standard_color = standard_color
-        self.highlight_background_color = highlight_background_color
-
-        if highlight_foreground_color == None:
-            highlight_foreground_color = standard_color
-
-        if alt_highlight_foreground_color == None:
-            alt_highlight_foreground_color = standard_color
-
-        self.highlight_foreground_color = highlight_foreground_color
-
-        Color.last_color_id += 1
-        self.standard_color_id = Color.last_color_id
-        Color.last_color_id += 1
-        self.highlight_color_id = Color.last_color_id
-        Color.last_color_id += 1
-        self.alt_highlight_color_id = Color.last_color_id
-        
-        curses.init_pair(self.standard_color_id, standard_color, standard_highlight_color)
-        curses.init_pair(self.highlight_color_id, highlight_foreground_color, highlight_background_color)
-        curses.init_pair(self.alt_highlight_color_id, alt_highlight_foreground_color, alt_highlight_background_color)
-
-# Define colors
-color_white: Color
-color_red: Color
-color_blue: Color
+from .colors import PyCalColors
 
 cal = calendar.Calendar()
 cell_width = 6
@@ -43,15 +13,6 @@ current_day = 1
 
 events_dates = []
 holidays = []
-
-def init_colors():
-    global color_white
-    global color_red
-    global color_blue
-
-    color_white = Color(highlight_foreground_color=curses.COLOR_BLACK, alt_highlight_foreground_color=curses.COLOR_BLACK)
-    color_red = Color(standard_color = curses.COLOR_RED)
-    color_blue = Color(standard_color=curses.COLOR_BLUE)
 
 def get_month_string(month):
     return months[month]
@@ -74,11 +35,11 @@ def draw_month_header(window):
     window.addstr(padded_top_string)
 
 def draw_weekdays(window):
-    window.addstr("|", curses.color_pair(color_white.standard_color_id))
+    window.addstr("|", curses.color_pair(PyCalColors.color_white.standard_color_id))
 
     for weekday in weekdays:
-        window.addstr(weekday.center(cell_width), curses.color_pair(color_red.standard_color_id))
-        window.addstr("|", curses.color_pair(color_white.standard_color_id))
+        window.addstr(weekday.center(cell_width), curses.color_pair(PyCalColors.color_red.standard_color_id))
+        window.addstr("|", curses.color_pair(PyCalColors.color_white.standard_color_id))
     window.addstr("\n")
 
 def get_calendar_delimiter():
@@ -92,7 +53,7 @@ def get_calendar_delimiter():
     return output
 
 def draw_calendar_delimiter(window):
-    window.addstr(get_calendar_delimiter(), curses.color_pair(color_white.standard_color_id))
+    window.addstr(get_calendar_delimiter(), curses.color_pair(PyCalColors.color_white.standard_color_id))
 
 def get_date_string(date):
     output = ""
@@ -118,13 +79,13 @@ def date_has_content(date):
     return False
 
 def get_color_for_date(date):
-    selected_color_object = color_white
+    selected_color_object = PyCalColors.color_white
 
     # Check if special day
     if date.month != current_month:
-        selected_color_object = color_blue
+        selected_color_object = PyCalColors.color_blue
     elif is_weekend(date) or is_holiday(date):
-        selected_color_object = color_red
+        selected_color_object = PyCalColors.color_red
 
     # Check if highlighted
     if date.day == current_day and date.month == current_month:
@@ -139,11 +100,11 @@ def draw_calendar_days(window):
     weekday = 0
     for i in cal.itermonthdates(current_year, current_month):
         if weekday == 0:
-            window.addstr("|", curses.color_pair(color_white.standard_color_id))
+            window.addstr("|", curses.color_pair(PyCalColors.color_white.standard_color_id))
 
         day_string = get_date_string(i)
         window.addstr(day_string, curses.color_pair(get_color_for_date(i)))
-        window.addstr("|", curses.color_pair(color_white.standard_color_id))
+        window.addstr("|", curses.color_pair(PyCalColors.color_white.standard_color_id))
 
         if weekday >= 6:
             weekday = 0
@@ -184,6 +145,4 @@ def init_calendar_window():
     # Init window
     window = curses.newwin(win_height, win_width, win_start_y, win_start_x)
 
-    # Init colors
-    init_colors()
     return window
