@@ -45,10 +45,11 @@ def previous_month():
     else:
         current_state.month -= 1
 
-def next_event():
+def next_event(number_of_events = 0):
     global current_state
 
-    current_state.selected_event += 1
+    if current_state.selected_event < (number_of_events - 1):
+        current_state.selected_event += 1
 
 def previous_event():
     global current_state
@@ -133,15 +134,15 @@ def handle_key_calendar_mode(key, stdscr):
     elif key == config.ADD_EVENT_KEY:
         add_event(stdscr)
 
-def handle_key_event_mode(key):
+def handle_key_event_mode(key, number_of_events):
     if key == config.UP_KEY:
         previous_event()
     elif key == config.DOWN_KEY:
-        next_event()
+        next_event(number_of_events)
     elif key == config.NEXT_KEY:
         open_event()
 
-def handle_key_pressed(key, stdscr):
+def handle_key_pressed(key, stdscr, number_of_events):
 
     # Handle switch mode key
     if key == config.CYCLE_MODE_KEY:
@@ -152,6 +153,6 @@ def handle_key_pressed(key, stdscr):
     if current_state.mode == Modes.CALENDAR:
         handle_key_calendar_mode(key, stdscr)
     elif current_state.mode == Modes.EVENTS:
-        handle_key_event_mode(key)
+        handle_key_event_mode(key, number_of_events)
 
     return current_state
