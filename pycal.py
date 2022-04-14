@@ -69,7 +69,7 @@ def main(stdscr):
         current_key = stdscr.getkey()
 
         # Handle the command
-        current_state = handle_key_pressed(current_key, stdscr)
+        current_state = handle_key_pressed(current_key, stdscr, len(events))
 
     calendar_window.clear()
     events_window.clear()

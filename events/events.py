@@ -9,7 +9,7 @@ class Event:
         if jsonObj != None:
             # Parse an event from JSON
             self.id = jsonObj["id"]
-            self.title = jsonObj["title"]
+            self.title = jsonObj["title"].strip()
 
             raw_event_datetime = jsonObj["datetime"]
             event_datetime = datetime.fromisoformat(raw_event_datetime)
@@ -143,6 +143,8 @@ class Event:
         if parsed_time != None:
             self.datetime = parsed_time
             self.type = None
+        else:
+            self.type = "timeless"
 
     def to_json(self):
         return {

@@ -1,5 +1,6 @@
 import curses
 from .draw_calendar import get_month_string
+from .colors import PyCalColors
 
 def format_time(date):
     hour = date.hour
@@ -17,6 +18,32 @@ def format_time(date):
 
     output = hour + ":" + minute
     return output
+
+def draw_single_event(window, event, is_selected = False):
+    # Draw title
+    if is_selected:
+        window.addstr(" ", curses.color_pair(PyCalColors.color_white.highlight_color_id))
+
+    if event.type == "timeless":
+        window.addstr(event.title, curses.A_UNDERLINE)
+        window.addstr("\n")
+    else:
+        time_format = format_time(event.datetime)
+        window.addstr(event.title, curses.A_UNDERLINE)
+        window.addstr(" - " + "(" + time_format + ")\n")
+
+    # Draw content
+    if event.content != None and event.content != "":
+        if is_selected:
+            window.addstr(" ", curses.color_pair(PyCalColors.color_white.highlight_color_id))
+        content = event.content
+        if len(event.content) > 20:
+            content = event.content[:20] + "..."
+        content = content.replace('\n', '')
+        window.addstr("-> " + content + "\n")
+    
+    # Draw separator
+    window.addstr("------------------------------\n")
 
 def draw_events(window, state, events, holidays):
     window.clear()
@@ -36,19 +63,8 @@ def draw_events(window, state, events, holidays):
 
         event_counter = 0
         for event in events:
-            if event.type == "timeless":
-                # Event without time
-                if state.selected_event == event_counter:
-                    window.addstr("- " + " ([" + str(event.id) + "]) " + event.title + "\n" + event.content + "\n")
-                else:
-                    window.addstr("- " + " [" + str(event.id) + "] " + event.title + "\n" + event.content + "\n")
-            else:
-                # Event with time
-                if state.selected_event == event_counter:
-                    window.addstr("- (" + format_time(event.datetime) + ")" + " ([" + str(event.id) + "]) " + event.title + "\n" + event.content + "\n")
-                else:
-                    window.addstr("- (" + format_time(event.datetime) + ")" + " [" + str(event.id) + "] " + event.title + "\n" + event.content + "\n")
-
+            is_selected = state.selected_event == event_counter
+            draw_single_event(window, event, is_selected)
             event_counter += 1
 
     window.refresh()
