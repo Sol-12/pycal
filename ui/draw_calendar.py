@@ -61,7 +61,7 @@ def get_date_string(date):
         output = "0" + str(date.day)
     else:
         output = str(date.day)
-    return output.center(cell_width)
+    return output
 
 def is_weekend(date):
     return date.weekday() == 6 or date.weekday() == 5
@@ -80,6 +80,8 @@ def date_has_content(date):
 
 def get_color_for_date(date):
     selected_color_object = PyCalColors.color_white
+    selected_color_id = selected_color_object.standard_color_id
+    small_highlight = False
 
     # Check if special day
     if date.month != current_month:
@@ -89,12 +91,14 @@ def get_color_for_date(date):
 
     # Check if highlighted
     if date.day == current_day and date.month == current_month:
-        return selected_color_object.highlight_color_id
+        selected_color_id = selected_color_object.highlight_color_id
+    elif date_has_content(date):
+        selected_color_id = selected_color_object.alt_highlight_color_id
+        small_highlight = True
+    else:
+        selected_color_id = selected_color_object.standard_color_id
 
-    if date_has_content(date):
-        return selected_color_object.alt_highlight_color_id
-
-    return selected_color_object.standard_color_id
+    return (selected_color_id, small_highlight)
 
 def draw_calendar_days(window):
     weekday = 0
@@ -102,8 +106,25 @@ def draw_calendar_days(window):
         if weekday == 0:
             window.addstr("|", curses.color_pair(PyCalColors.color_white.standard_color_id))
 
-        day_string = get_date_string(i)
-        window.addstr(day_string, curses.color_pair(get_color_for_date(i)))
+        day_core_string = get_date_string(i)
+        day_color_tuple = get_color_for_date(i)
+
+        if day_color_tuple[1]:
+            # If small highlight
+
+            # Calculate whitespace
+            whitespace_string = ""
+            whitespace_width = int((cell_width - 2) / 2)
+            for i in range(whitespace_width):
+                whitespace_string += " "
+
+            window.addstr(whitespace_string, PyCalColors.color_white.standard_color_id)
+            window.addstr(day_core_string, curses.color_pair(day_color_tuple[0]))
+            window.addstr(whitespace_string, PyCalColors.color_white.standard_color_id)
+        else:
+            # If not small highlight
+            window.addstr(day_core_string.center(cell_width), curses.color_pair(day_color_tuple[0]))
+
         window.addstr("|", curses.color_pair(PyCalColors.color_white.standard_color_id))
 
         if weekday >= 6:

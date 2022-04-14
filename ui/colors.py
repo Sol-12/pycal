@@ -3,7 +3,7 @@ import curses
 class Color:
     last_color_id = 0
 
-    def __init__(self, standard_color=curses.COLOR_WHITE, standard_highlight_color=-1, highlight_foreground_color=None, highlight_background_color=curses.COLOR_WHITE, alt_highlight_foreground_color=None, alt_highlight_background_color=curses.COLOR_YELLOW):
+    def __init__(self, standard_color=curses.COLOR_WHITE, standard_highlight_color=-1, highlight_foreground_color=None, highlight_background_color=curses.COLOR_YELLOW, alt_highlight_foreground_color=None, alt_highlight_background_color=curses.COLOR_WHITE):
         self.standard_color = standard_color
         self.highlight_background_color = highlight_background_color
 
