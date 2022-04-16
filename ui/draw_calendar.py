@@ -161,7 +161,7 @@ def init_calendar_window():
     win_height = 13
     win_width = 60
     win_start_x = 0
-    win_start_y = 0
+    win_start_y = 2
 
     # Init window
     window = curses.newwin(win_height, win_width, win_start_y, win_start_x)

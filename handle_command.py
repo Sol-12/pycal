@@ -11,6 +11,7 @@ from config.configuration import Configuration
 
 from events.events import Event
 from events.event_manager import EventManager
+from ui.draw_title_section import draw_title, init_title_window
 
 class Modes(Enum):
     CALENDAR = 0
@@ -134,15 +135,32 @@ def handle_key_calendar_mode(key, stdscr):
     elif key == config.ADD_EVENT_KEY:
         add_event(stdscr)
 
-def handle_key_event_mode(key, number_of_events):
+def delete_event(title_window, stdscr):
+    manager = EventManager()
+    event = manager.get_event_on_date(current_state.day, current_state.month, current_state.year, event_inx=current_state.selected_event)
+
+    # Confirm action
+    if event != None:
+        confirm_string = "Delete " + str(event.title) + "? (y/n)\n"
+        draw_title(title_window, confirm_string)
+        key = stdscr.getkey()
+
+        if key == "y":
+            # If confirmed, delete event
+            manager.remove_event(event)
+            manager.write_to_file()
+
+def handle_key_event_mode(key, number_of_events, title_window, stdscr):
     if key == config.UP_KEY:
         previous_event()
     elif key == config.DOWN_KEY:
         next_event(number_of_events)
     elif key == config.NEXT_KEY:
         open_event()
+    elif key == config.DELETE_EVENT_KEY:
+        delete_event(title_window, stdscr)
 
-def handle_key_pressed(key, stdscr, number_of_events):
+def handle_key_pressed(key, stdscr, number_of_events, title_window):
 
     # Handle switch mode key
     if key == config.CYCLE_MODE_KEY:
@@ -153,6 +171,6 @@ def handle_key_pressed(key, stdscr, number_of_events):
     if current_state.mode == Modes.CALENDAR:
         handle_key_calendar_mode(key, stdscr)
     elif current_state.mode == Modes.EVENTS:
-        handle_key_event_mode(key, number_of_events)
+        handle_key_event_mode(key, number_of_events, title_window, stdscr)
 
     return current_state
