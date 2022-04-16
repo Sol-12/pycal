@@ -12,6 +12,7 @@ from handle_command import handle_key_pressed
 from ui.draw_calendar import draw_calendar
 from ui.draw_calendar import init_calendar_window
 from ui.draw_events import draw_events, init_events_window
+from ui.draw_title_section import draw_title, init_title_window
 from ui.colors import PyCalColors
 
 current_state = State()
@@ -46,6 +47,7 @@ def main(stdscr):
     stdscr.clear()
 
     # Init window
+    title_window = init_title_window()
     calendar_window = init_calendar_window()
     events_window = init_events_window()
     stdscr.refresh()
@@ -62,6 +64,7 @@ def main(stdscr):
         todays_holidays = get_todays_holidays(holidays)
 
         # Update display
+        draw_title(title_window)
         draw_calendar(calendar_window, current_state.year, current_state.month, current_state.day, events_dates, holidays)
         draw_events(events_window, current_state, events, todays_holidays)
 
@@ -69,7 +72,7 @@ def main(stdscr):
         current_key = stdscr.getkey()
 
         # Handle the command
-        current_state = handle_key_pressed(current_key, stdscr, len(events))
+        current_state = handle_key_pressed(current_key, stdscr, len(events), title_window)
 
     calendar_window.clear()
     events_window.clear()

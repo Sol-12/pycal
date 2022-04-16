@@ -9,3 +9,5 @@ class Configuration:
         self.ADD_EVENT_KEY = "a"
 
         self.CYCLE_MODE_KEY = "m"
+        self.DELETE_EVENT_KEY = "d"
+        self.CONFIRM_ACTION_KEY = "y"

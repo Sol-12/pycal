@@ -27,8 +27,8 @@ class EventManager:
 
         return data
 
-# Analyzes data we have an returns all days that have an event
     def get_dates_with_events(self):
+        # Analyzes data we have an returns all days that have an event
         output = []
         for event in self.events:
             output.append(event.datetime)
@@ -36,6 +36,7 @@ class EventManager:
         return output
 
     def get_events_for_date(self, day, month, year):
+        # Returns all events on a certain date
         output = []
 
         for event in self.events:
@@ -45,6 +46,7 @@ class EventManager:
         return output
 
     def get_event_on_date(self, day, month, year, event_inx) -> Event:
+        # Returns an event on a specific day with a certain index
         events_on_date = self.get_events_for_date(day, month, year)
 
         if len(events_on_date) > event_inx:
@@ -53,6 +55,7 @@ class EventManager:
         return None
 
     def write_to_file(self):
+        # Write current list of events (self.events) to the calendar file
         filename = "calendar.json"
         base_path = sys.path[0]
         data_path = base_path + "/" + filename
@@ -65,7 +68,12 @@ class EventManager:
             fileptr.write(json.dumps(json_array))
             fileptr.close()
 
+    def remove_event(self, event):
+        # Removes event from list
+        self.events.remove(event)
+
     def get_next_id(self):
+        # Gets a new id for a new event
         highest_id = 0
         for event in self.events:
             if event.id > highest_id:
@@ -75,6 +83,7 @@ class EventManager:
         return new_id
 
     def add_event(self, event):
+        # Adds a new event into the list
         if event.id == None:
             event.id = self.get_next_id()
 
