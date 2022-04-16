@@ -5,17 +5,12 @@ from curses.textpad import Textbox, rectangle
 from datetime import date
 from datetime import datetime
 
-from enum import Enum
-
 from config.configuration import Configuration
 
 from events.events import Event
 from events.event_manager import EventManager
-from ui.draw_title_section import draw_title, init_title_window
-
-class Modes(Enum):
-    CALENDAR = 0
-    EVENTS = 1
+from ui.draw_mode_display import draw_mode_display
+from modes import Modes
 
 class State:
     def __init__(self):
@@ -142,7 +137,7 @@ def delete_event(title_window, stdscr):
     # Confirm action
     if event != None:
         confirm_string = "Delete " + str(event.title) + "? (y/n)\n"
-        draw_title(title_window, confirm_string)
+        draw_mode_display(title_window, confirm_string)
         key = stdscr.getkey()
 
         if key == "y":
