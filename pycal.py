@@ -5,15 +5,15 @@ import sys
 import curses
 from curses import wrapper
 
-from config.configuration import Configuration
+from configuration.configuration import Configuration
 from events.event_manager import EventManager
 from handle_command import State
 from handle_command import handle_key_pressed
-from ui.draw_calendar import draw_calendar
-from ui.draw_calendar import init_calendar_window
-from ui.draw_events import draw_events, init_events_window
-from ui.draw_mode_display import draw_mode_display, init_mode_display_window
-from ui.colors import PyCalColors
+from rendering.draw_calendar import draw_calendar
+from rendering.draw_calendar import init_calendar_window
+from rendering.draw_events import draw_events, init_events_window
+from rendering.draw_mode_display import draw_mode_display, init_mode_display_window
+from rendering.colors import PyCalColors
 
 current_state = State()
 

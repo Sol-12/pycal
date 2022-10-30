@@ -5,11 +5,11 @@ from curses.textpad import Textbox, rectangle
 from datetime import date
 from datetime import datetime
 
-from config.configuration import Configuration
+from configuration.configuration import Configuration
 
 from events.events import Event
 from events.event_manager import EventManager
-from ui.draw_mode_display import draw_mode_display
+from rendering.draw_mode_display import draw_mode_display
 from modes import Modes
 
 class State:
